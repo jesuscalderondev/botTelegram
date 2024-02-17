@@ -216,6 +216,7 @@ if __name__ == '__main__':
     userBot = getenv('userbot')
     token = getenv('token')
     print('Iniciando...')
+    
     app = Application.builder().token(token).build()
     app.add_handler(CommandHandler('start', iniciar))
     app.add_handler(CommandHandler('agendar', agendar))
