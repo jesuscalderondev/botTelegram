@@ -9,7 +9,7 @@ import psycopg2
 
 from functions import passwordHash
 
-database = f'postgresql://database_0flw_user:blhx9MiXBBUU78t6zCgPNhQokMJGgDdz@dpg-cn8imbgcmk4c739r7k80-a.ohio-postgres.render.com/database_0flw'
+database = f'postgresql://fl0user:SjVQIKkY24oD@ep-black-snow-a5xfghmv.us-east-2.aws.neon.fl0.io:5432/database?sslmode=require'
 #database = 'sqlite:///database.db'
 engine = create_engine(database)
 Session = sessionmaker(bind=engine)
