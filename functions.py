@@ -1,5 +1,4 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import session as cookies
 import requests
 
 def passwordHash(password:str):
@@ -17,14 +16,6 @@ def toJson(objetc):
     else:
         return {}
 
-
-
-def requiredSession(f):
-    def decorated(*args, **kwargs):
-        if 'token' not in cookies:
-            raise ValueError('Se requiere una sesión activa para ver la información')
-        return f(*args, **kwargs)
-    return decorated
 
 
 def crearListaHoras(inicio, fin, intervalo, horasNoValdas):
