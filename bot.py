@@ -146,8 +146,8 @@ Fecha de nacimiento: 2024/6/17
         
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Displays info on how to use the bot."""
-    await update.message.reply_text("Use /start to test this bot.")
+    """Displays info on how to use the app."""
+    await update.message.reply_text("Use /start to test this app.")
 
 async def iniciar(update:Update, context: ContextTypes):
     try:
@@ -216,13 +216,13 @@ if __name__ == '__main__':
     userBot = getenv('userbot')
     token = getenv('token')
     print('Iniciando...')
-    bot = Application.builder().token(token).build()
-    bot.add_handler(CommandHandler('start', iniciar))
-    bot.add_handler(CommandHandler('agendar', agendar))
-    bot.add_handler(CommandHandler('obtenercodigo', obtenerCodigo))
-    bot.add_handler(CallbackQueryHandler(button))
-    bot.add_handler(MessageHandler(filters.TEXT, verificarProcedencia))
-    bot.add_error_handler(error)
+    app = Application.builder().token(token).build()
+    app.add_handler(CommandHandler('start', iniciar))
+    app.add_handler(CommandHandler('agendar', agendar))
+    app.add_handler(CommandHandler('obtenercodigo', obtenerCodigo))
+    app.add_handler(CallbackQueryHandler(button))
+    app.add_handler(MessageHandler(filters.TEXT, verificarProcedencia))
+    app.add_error_handler(error)
 
     print('Iniciado')
-    bot.run_polling(allowed_updates=Update.ALL_TYPES)
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
