@@ -6,10 +6,7 @@ from datetime import datetime, date, time, timedelta
 from sqlalchemy import desc, asc
 from database import *
 from functions import *
-load_dotenv()
 
-userBot = getenv('userbot')
-token = getenv('token')
 
 def registrarCita(texto:str, usuario:str) -> Boolean:
     parametros = texto.split(':')
@@ -215,6 +212,10 @@ async def error(update:Update, context: ContextTypes):
 
 
 if __name__ == '__main__':
+    load_dotenv()
+    userBot = getenv('userbot')
+    token = getenv('token')
+    print('Iniciando...')
     bot = Application.builder().token(token).build()
     bot.add_handler(CommandHandler('start', iniciar))
     bot.add_handler(CommandHandler('agendar', agendar))
