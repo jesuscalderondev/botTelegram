@@ -21,13 +21,40 @@ def toJson(objetc):
         return {}
 
 
+
+def requiredSession(f):
+    def decorated(*args, **kwargs):
+        if 'token' not in cookies:
+            raise ValueError('Se requiere una sesión activa para ver la información')
+        return f(*args, **kwargs)
+    return decorated
+
+
+def crearListaHoras(inicio, fin, intervalo, horasNoValdas):
+    horas = []
+    for hora in range(inicio, fin+1):
+        for a in range(0, 60, intervalo):
+            horaf = f"{hora:02}:{a:02}"
+            if horaf not in horasNoValdas:
+                horas.append(horaf)
+    #Modificar
+    """ if(horas[-1] == '15:45' or horas[-1][:2] == '16'):
+        horas.pop() """
+    return horas
+
 def obtenerHoraCita(fecha:str):
     try:
-        response = requests.get(f'https://clinicamx-dev-efpc.2.us-1.fl0.io/api/consultar/horario/{fecha.replace("/", "-")}')
+        rutaHost = 'https://clinicamx-dev-efpc.2.us-1.fl0.io'
+        rutaLocal = 'http://127.0.0.1:8080'
+        response = requests.get(f'{rutaLocal}/api/consultar/horario/{fecha.replace("/", "-")}')
         try:
             hora = response.json()['horas']
             return hora
-        except:
+        except Exception as e:
+            print("Error en el primero")
+            print(e)
             return None
-    except:
+    except Exception as e:
+        print("Error en el segundo")
+        print(e)
         return None

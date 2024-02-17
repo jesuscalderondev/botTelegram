@@ -9,8 +9,8 @@ import psycopg2
 
 from functions import passwordHash
 
-#database = f'postgresql+psycopg2://fl0user:BPYhpWNKS1e4@ep-jolly-pine-a5v5vlj4.us-east-2.aws.neon.fl0.io:5432/database?sslmode=require'
-database = 'sqlite:///database.db'
+database = f'postgres://fl0user:SjVQIKkY24oD@ep-black-snow-a5xfghmv.us-east-2.aws.neon.fl0.io:5432/database?sslmode=require'
+#database = 'sqlite:///database.db'
 engine = create_engine(database)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -31,41 +31,21 @@ class Usuario(Base):
         self.clave = passwordHash(clave)
         self.cargo = cargo
 
-""" class Paciente(Base):
-    __tablename__ = 'pacientes'
-    id = Column(Integer, primary_key=True)
-    nombreCompleto = Column(String(300),nullable=False)
-    fechaNacimiento = Column(Date, nullable=False)
-    noDocumento = Column(String(18), nullable=False)
-    tipoDeDocumento = Column(String(20), nullable=False)
-    
-
-    def __init__(self, nombreCompleto, fechaNacimiento, noDocumento, tipoDeDocumento):
-        self.nombreCompleto = nombreCompleto
-        self.fechaNacimiento = fechaNacimiento
-        self.noDocumento = noDocumento
-        self.tipoDeDocumento = tipoDeDocumento
-
-    def __str__(self):
-        return self.nombreCompleto """
-
-""" class Voluntario(Base):
+class Voluntario(Base):
     __tablename__ = 'voluntarios'
     id = Column(Integer, primary_key=True)
     nombreCompleto = Column(String(300),nullable=False)
-    noDocumento = Column(String(18), nullable=False)
-    tipoDeDocumento = Column(String(20), nullable=False)
-    colonia = Column(String(100), nullable=False)
+    localidad = Column(String(100), nullable=False)
+    telegramId = Column(String(50), nullable=False)
     
 
-    def __init__(self, nombreCompleto, noDocumento, tipoDeDocumento, colonia):
+    def __init__(self, nombreCompleto, localidad, telegramId):
         self.nombreCompleto = nombreCompleto
-        self.noDocumento = noDocumento
-        self.tipoDeDocumento = tipoDeDocumento
-        self.colonia = colonia
+        self.localidad = localidad
+        self.telegramId = telegramId
         
     def __str__(self):
-        return self.nombreCompleto """
+        return self.nombreCompleto
     
         
         
@@ -93,7 +73,10 @@ class Turno(Base):
             self.hora = hora
         self.motivo = motivo
         self.paciente = paciente
-        self.fechaNacimiento = datetime.strptime(fechaNacimiento, "%Y-%m-%d")
+        try:
+            self.fechaNacimiento = datetime.strptime(fechaNacimiento, "%Y-%m-%d")
+        except:
+            self.fechaNacimiento = fechaNacimiento
         try:
             self.edad = self.calcularEdad()
         except:
