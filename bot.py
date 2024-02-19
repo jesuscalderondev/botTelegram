@@ -56,11 +56,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.edit_message_text(text=f"Has seleccionado: {query.data}")
 
     nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id), Turno.paciente == "Sin definir").order_by(Turno.id.desc()).first()
-
+    print(nuevoTurno)
     if nuevoTurno == None:
+        print("Si entra")
         nuevoTurno = Turno(query.data, None, "Sin definir", "Sin definir", "Sin localidad", "Sin definir", "Sin definir", None)
         nuevoTurno.idTelegram = str(query.message.chat.id)
     try:
+        print("Turno nuevo", nuevoTurno)
         nuevoTurno.fecha = datetime.strptime(query.data, '%Y-%m-%d')
         try:
             session.add(nuevoTurno)
