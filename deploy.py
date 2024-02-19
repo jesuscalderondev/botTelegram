@@ -9,8 +9,8 @@ from functions import *
 import os
 
 load_dotenv()
-userBot = os.environ['userbot']
-token = os.environ['token']
+userBot = os.environ['USER_BOT']
+token = os.environ['TOKEN']
 app = Application.builder().token(token).build()
 
 def registrarCita(texto:str, usuario:str) -> Boolean:
