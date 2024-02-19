@@ -176,7 +176,7 @@ def procesarTexto(text:str, context:ContextTypes, update:Update):
     if 'datos del paciente' in textoPlano:
         try:
             parametros = textoPlano.split(": ")
-            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(update.message.chat.id)).order_by(Turno.id.desc()).first()
+            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id), Turno.paciente == "Sin definir").order_by(Turno.id.desc()).first()
             voluntario = session.query(Voluntario).filter(Voluntario.telegramId == str(update.message.chat.id)).first()
             print(voluntario, '******************************************************************************')
             if voluntario == None:
