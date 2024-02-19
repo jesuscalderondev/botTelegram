@@ -55,7 +55,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
     await query.edit_message_text(text=f"Has seleccionado: {query.data}")
 
-    nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id)).order_by(Turno.id.desc()).first()
+    nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id), Turno.paciente == "Sin definir").order_by(Turno.id.desc()).first()
 
     if nuevoTurno == None:
         nuevoTurno = Turno(query.data, None, "Sin definir", "Sin definir", "Sin localidad", "Sin definir", "Sin definir", None)
