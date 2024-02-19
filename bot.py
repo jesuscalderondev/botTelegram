@@ -29,10 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def agendar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     agenda = session.query(DiaTrabajo).filter(DiaTrabajo.fecha >  datetime.now() - timedelta(days=1), DiaTrabajo.laborable == True).order_by(desc(DiaTrabajo.id)).limit(6)
-    agend2 = session.query(DiaTrabajo).all()
     update.message.from_user.id
-    for i in agenda:
-        print(i)
     try:
         keyboard = []
 
@@ -53,12 +50,11 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
     await query.edit_message_text(text=f"Has seleccionado: {query.data}")
 
-    nuevoTurno = session.query(Turno).filter(Turno.idTelegram == query.message.chat.id).order_by(Turno.id.desc()).first()
+    nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id)).order_by(Turno.id.desc()).first()
 
     if nuevoTurno == None:
         nuevoTurno = Turno(query.data, None, "Sin definir", "Sin definir", "Sin localidad", "Sin definir", "Sin definir", None)
-        nuevoTurno.idTelegram = query.message.chat.id
-
+        nuevoTurno.idTelegram = str(query.message.chat.id)
     try:
         nuevoTurno.fecha = datetime.strptime(query.data, '%Y-%m-%d')
         try:
@@ -173,14 +169,15 @@ def procesarTexto(text:str, context:ContextTypes, update:Update):
     if 'datos del paciente' in textoPlano:
         try:
             parametros = textoPlano.split(": ")
-            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == update.message.chat.id).order_by(Turno.id.desc()).first()
-            voluntario = session.query(Voluntario).filter(Voluntario.telegramId == update.message.chat.id).first()
+            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(update.message.chat.id)).order_by(Turno.id.desc()).first()
+            voluntario = session.query(Voluntario).filter(Voluntario.telegramId == str(update.message.chat.id)).first()
+            print(voluntario, '******************************************************************************')
             if voluntario == None:
                 return f"❌ La cita no pudo ser asignada, dado que usted no es un usuario autorizado, para poder hacerlo, debe comunicarse con el encargado de registros de voluntarios"
             nuevoTurno.deriva = voluntario.nombreCompleto
             nuevoTurno.localidad = voluntario.localidad
             nuevoTurno.paciente = parametros[1].split("\n")[0].title()
-            nuevoTurno.fechaNacimiento = datetime.strptime(parametros[2].split("\n")[0], "%Y/%m/%d")
+            nuevoTurno.fechaNacimiento = formatearFecha(parametros[2].split("\n")[0])
             session.add(nuevoTurno)
             session.commit()
             return f"✅ Su cita fue aprobada con código C1-{nuevoTurno.id}, para la fecha {nuevoTurno.fecha} a las {nuevoTurno.hora}"
@@ -208,7 +205,11 @@ async def verificarProcedencia(update:Update, context: ContextTypes):
 
 async def error(update:Update, context: ContextTypes):
     print(context.error)
-    await update.message.reply_text('Ha ocurrido un error a la hora de generar tu cita')
+    message = f'{context.error}\nHa ocurrido un error a la hora de generar tu cita'
+    try:
+        await update.message.reply_text(message)
+    except:
+        await update.callback_query.message.reply_text(message)
 
 
 if __name__ == '__main__':

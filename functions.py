@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
+from datetime import datetime
 
 def passwordHash(password:str):
     return generate_password_hash(password)
@@ -32,9 +33,9 @@ def crearListaHoras(inicio, fin, intervalo, horasNoValdas):
 
 def obtenerHoraCita(fecha:str):
     try:
-        rutaHost = 'https://clinicamx-dev-efpc.2.us-1.fl0.io'
+        rutaHost = 'https://clinicamx-dev-jgzj.1.us-1.fl0.io'
         rutaLocal = 'http://127.0.0.1:8080'
-        response = requests.get(f'{rutaLocal}/api/consultar/horario/{fecha.replace("/", "-")}')
+        response = requests.get(f'{rutaHost}/api/consultar/horario/{fecha.replace("/", "-")}')
         try:
             hora = response.json()['horas']
             return hora
@@ -46,3 +47,14 @@ def obtenerHoraCita(fecha:str):
         print("Error en el segundo")
         print(e)
         return None
+
+def formatearFecha(fechaStr):
+    formatos = ["%Y/%m/%d", "%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"]
+    for formato in formatos:
+        try:
+            fecha = datetime.strptime(fechaStr, formato)
+            return fecha
+        except:
+            pass
+    
+        
