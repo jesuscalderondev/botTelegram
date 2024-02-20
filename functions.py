@@ -34,12 +34,9 @@ def crearListaHoras(inicio, fin, intervalo, horasNoValdas):
 def obtenerHoraCita(fecha:str):
     try:
         rutaHost = 'https://clinicamx-dev-jgzj.1.us-1.fl0.io'
-        rutaLocal = 'http://127.0.0.1:8080'
-        try:
-            response = requests.get(f'{rutaHost}/api/consultar/horario/{fecha.replace("/", "-")}')
-        except:
-            response = requests.get(f'{rutaLocal}/api/consultar/horario/{fecha.replace("/", "-")}')
-            
+
+        response = requests.get(f'{rutaHost}/api/consultar/horario/{fecha.replace("/", "-")}')
+
         try:
             hora = response.json()['horas']
             return hora
