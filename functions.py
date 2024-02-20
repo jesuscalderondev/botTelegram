@@ -36,9 +36,10 @@ def obtenerHoraCita(fecha:str):
         rutaHost = 'https://clinicamx-dev-jgzj.1.us-1.fl0.io'
 
         response = requests.get(f'{rutaHost}/api/consultar/horario/{fecha.replace("/", "-")}')
-
+        print(response, "Aquí va la hora")
         try:
             hora = response.json()['horas']
+            
             return hora
         except Exception as e:
             print("Error en el primero")
