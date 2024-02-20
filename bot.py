@@ -176,7 +176,7 @@ def procesarTexto(text:str, context:ContextTypes, update:Update):
     if 'datos del paciente' in textoPlano:
         try:
             parametros = textoPlano.split(": ")
-            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(query.message.chat.id), Turno.paciente == "Sin definir").order_by(Turno.id.desc()).first()
+            nuevoTurno = session.query(Turno).filter(Turno.idTelegram == str(update.message.chat.id), Turno.paciente == "Sin definir").order_by(Turno.id.desc()).first()
             voluntario = session.query(Voluntario).filter(Voluntario.telegramId == str(update.message.chat.id)).first()
             print(voluntario, '******************************************************************************')
             if voluntario == None:
@@ -189,6 +189,7 @@ def procesarTexto(text:str, context:ContextTypes, update:Update):
             session.commit()
             return f"✅ Su cita fue aprobada con código C1-{nuevoTurno.id}, para la fecha {nuevoTurno.fecha} a las {nuevoTurno.hora}"
         except Exception as e:
+            print(e)
             return f"❌ La cita no pudo ser asignada, {e}"
     else:
         return 'Disculpa, no te entiendo'
@@ -216,7 +217,7 @@ async def error(update:Update, context: ContextTypes):
     try:
         await update.message.reply_text(message)
     except:
-        pass
+        await update.callback_query.edit_message_text(text=f'{context.error}')
 
 
 if __name__ == '__main__':
