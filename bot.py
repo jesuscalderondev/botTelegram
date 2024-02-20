@@ -217,7 +217,12 @@ async def error(update:Update, context: ContextTypes):
     try:
         await update.message.reply_text(message)
     except:
-        await update.callback_query.edit_message_text(text=f'{context.error}')
+        try:
+            query = update.callback_query
+            await query.answer()
+            await update.callback_query.edit_message_text(text=f'{context.error}')
+        except:
+            pass
 
 
 if __name__ == '__main__':
