@@ -36,11 +36,10 @@ def obtenerHoraCita(fecha:str):
         rutaHost = 'https://clinicamx-dev-jgzj.1.us-1.fl0.io'
         local = 'http://127.0.0.1:8080'
 
-        response = requests.get(f'{rutaHost}/api/consultar/horario/{fecha.replace("/", "-")}')
-        print(response, "Aquí va la hora")
+        response = requests.get(f'{local}/api/consultar/horario/{fecha.replace("/", "-")}')
         try:
             hora = response.json()['horas']
-            
+            print(hora, "Hoaaa")
             return hora
         except Exception as e:
             print("Error en el primero")
@@ -53,11 +52,12 @@ def obtenerHoraCita(fecha:str):
 
 def formatearFecha(fechaStr):
     formatos = ["%Y/%m/%d", "%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"]
-    for formato in formatos:
+    contador = 0
+    while contador < 4:
         try:
-            fecha = datetime.strptime(fechaStr, formato)
+            fecha = datetime.strptime(fechaStr, formatos[contador])
             return fecha
         except:
-            pass
+            contador+=1
     
-        
+    return ExceptionGroup

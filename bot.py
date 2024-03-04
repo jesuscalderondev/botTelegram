@@ -33,7 +33,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 async def agendar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    agenda = session.query(DiaTrabajo).filter(DiaTrabajo.fecha >  datetime.now() - timedelta(days=1), DiaTrabajo.laborable == True).order_by(desc(DiaTrabajo.id)).limit(6)
+    #Cambiar desc a asc
+    agenda = session.query(DiaTrabajo).filter(DiaTrabajo.fecha >  datetime.now() - timedelta(days=1), DiaTrabajo.laborable == True).order_by(asc(DiaTrabajo.id)).limit(6)
     update.message.from_user.id
     try:
         keyboard = []
@@ -62,7 +63,6 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         nuevoTurno = Turno(query.data, None, "Sin definir", "Sin definir", "Sin localidad", "Sin definir", "Sin definir", None)
         nuevoTurno.idTelegram = str(query.message.chat.id)
     try:
-        print("Turno nuevo", nuevoTurno)
         nuevoTurno.fecha = datetime.strptime(query.data, '%Y-%m-%d')
         try:
             session.add(nuevoTurno)
@@ -184,13 +184,16 @@ def procesarTexto(text:str, context:ContextTypes, update:Update):
             nuevoTurno.deriva = voluntario.nombreCompleto
             nuevoTurno.localidad = voluntario.localidad
             nuevoTurno.paciente = parametros[1].split("\n")[0].title()
+            print(parametros[2].split("\n")[0], "******************************")
             nuevoTurno.fechaNacimiento = formatearFecha(parametros[2].split("\n")[0])
             session.add(nuevoTurno)
             session.commit()
             return f"✅ Su cita fue aprobada con código C1-{nuevoTurno.id}, para la fecha {nuevoTurno.fecha} a las {nuevoTurno.hora}"
         except Exception as e:
             print(e)
+            session.rollback()
             return f"❌ La cita no pudo ser asignada, {e}"
+            
     else:
         return 'Disculpa, no te entiendo'
     
@@ -233,6 +236,6 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(button))
     app.add_handler(MessageHandler(filters.TEXT, verificarProcedencia))
     app.add_error_handler(error)
-
+    Base.metadata.create_all(engine)
     print('Iniciado')
     app.run_polling(allowed_updates=Update.ALL_TYPES)
