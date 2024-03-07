@@ -9,8 +9,18 @@ import psycopg2
 
 from functions import passwordHash
 
-databaseString = str(getenv("DATABASE"))
-database = f'{databaseString}?sslmode=require'
+load_dotenv()
+
+hostdb = getenv("HOSTDB")
+userdb = getenv("USERDB")
+passdb = getenv("PASSDB")
+portdb = getenv("PORTDB")
+namedb = getenv("NAMEDB")
+sslmode = getenv("SSLMODE")
+
+print(hostdb, userdb)
+
+database = f'postgresql://{userdb}:{passdb}@{hostdb}:{portdb}/{namedb}?sslmode={sslmode}'
 
 #database = 'sqlite:///../../Documents/clinicaMx/database.db'
 engine = create_engine(database)
