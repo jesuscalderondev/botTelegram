@@ -8,8 +8,10 @@ from datetime import date, time, datetime
 import psycopg2
 
 from functions import passwordHash
-databaseString = getenv("database")
-database = f'{databaseString}sslmode=require'
+
+databaseString = str(getenv("database"))
+database = f'{databaseString}?sslmode=require'
+
 #database = 'sqlite:///../../Documents/clinicaMx/database.db'
 engine = create_engine(database)
 Session = sessionmaker(bind=engine)
