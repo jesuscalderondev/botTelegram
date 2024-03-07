@@ -9,7 +9,7 @@ import psycopg2
 
 from functions import passwordHash
 
-databaseString = str(getenv("database"))
+databaseString = str(getenv("DATABASE"))
 database = f'{databaseString}?sslmode=require'
 
 #database = 'sqlite:///../../Documents/clinicaMx/database.db'
